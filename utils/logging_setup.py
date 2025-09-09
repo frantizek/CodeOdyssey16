@@ -1,7 +1,9 @@
 import logging
-from typing import Optional
 
-def setup_logging(name: str, level: int = logging.INFO, log_file: Optional[str] = None) -> logging.Logger:
+
+def setup_logging(
+    name: str, level: int = logging.INFO, log_file: str | None = None
+) -> logging.Logger:
     """Set up logging for a module.
 
     Args:
@@ -15,7 +17,9 @@ def setup_logging(name: str, level: int = logging.INFO, log_file: Optional[str] 
     logger = logging.getLogger(name)
     logger.setLevel(level)
 
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
 
     # Console handler
     console_handler = logging.StreamHandler()

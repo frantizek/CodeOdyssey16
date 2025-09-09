@@ -17,8 +17,14 @@ dev = [
 
 [tool.ruff]
 line-length = 88
+
+[tool.ruff.lint]
 select = ["E", "F", "I", "B", "C4", "UP"]
 ignore = ["E501"]
+# exclude = ["migrations", "venv"]  # Excluir directorios
+
+[tool.ruff.format]
+quote-style = "single"  # o "double"
 
 [tool.black]
 line-length = 88
