@@ -33,6 +33,42 @@ The monorepo is organized into the following directories:
 
 ---
 
+## 🚀 Getting Started
+
+After setting up the environment, you can start creating and working on projects.
+
+1.  **Create a new project:**
+    Use the provided script to scaffold a new project with the correct structure.
+
+    ```bash
+    python scripts/setup_project.py your_new_project_name
+    ```
+
+2.  **Navigate to your project:**
+    ```bash
+    cd projects/your_new_project_name
+    ```
+
+3.  **Develop:**
+    - Add code to the `src/` directory.
+    - Write tests in the `tests/` directory.
+    - List project-specific dependencies in `requirements.txt`.
+    - Install them with `uv pip install -r requirements.txt`.
+
+4.  **Run Quality Checks:**
+    You can run checks manually at any time:
+    ```bash
+    # Format and lint your code
+    ruff format . && ruff check --fix .
+
+    # Run type checks
+    mypy .
+
+    # Run tests
+    pytest
+    ```
+---
+
 ## 📜 Standards
 
 This monorepo adheres to the following standards to ensure high-quality, maintainable, and professional code:

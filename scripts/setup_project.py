@@ -117,6 +117,12 @@ def create_project(project_name: str, base_dir: str = 'projects') -> Path | None
             logger.debug('Created file: %s', file_path)
 
         logger.info("Project '%s' created successfully at %s", project_name, base_path)
+        print('\n--- Next Steps ---')
+        print(f'1. Navigate to your project directory: cd {base_path}')
+        print('2. Add project-specific dependencies to requirements.txt')
+        print('3. Install them: uv pip install -r requirements.txt')
+        print(f'4. Start developing in: {base_path / "src"}')
+        print('------------------')
         return base_path
 
     except PermissionError as e:
