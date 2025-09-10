@@ -1,31 +1,148 @@
+#!/usr/bin/env python3
+"""
+Project setup script to create a standardized Python project structure.
+
+This script creates a new project directory with a predefined structure,
+including source, test, and documentation directories, along with initial
+files like README.md and requirements.txt. It ensures compatibility with
+common Python linters (e.g., flake8, pylint, mypy) and follows PEP 8 style
+guidelines.
+
+Usage:
+    python setup_project.py <project_name>
+
+Example:
+    python setup_project.py my_new_project
+"""
+
+import logging
+import sys
 from pathlib import Path
 
+# Configure logging for better output handling
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+)
+logger = logging.getLogger(__name__)
 
-def create_project(project_name: str) -> None:
-    """Create a new project directory with standard structure."""
-    base_path = Path(f"projects/{project_name}")
+
+def validate_project_name(project_name: str) -> bool:
+    """
+    Validate the project name to ensure it follows Python package naming conventions.
+
+    Args:
+        project_name (str): The name of the project to validate.
+
+    Returns:
+        bool: True if the project name is valid, False otherwise.
+
+    Notes:
+        - Project name should contain only letters, numbers, hyphens, or underscores.
+        - Must not start with a number or special character.
+        - Must not be empty.
+    """
+    if not project_name:
+        logger.error('Project name cannot be empty')
+        return False
+    if not project_name.replace('-', '_').isidentifier():
+        logger.error(
+            "Invalid project name: '%s'. Use letters, numbers, hyphens, or underscores, "
+            "and ensure it doesn't start with a number.",
+            project_name,
+        )
+        return False
+    return True
+
+
+def create_project(project_name: str, base_dir: str = 'projects') -> Path | None:
+    """
+    Create a new project directory with a standard Python project structure.
+
+    Args:
+        project_name (str): The name of the project to create.
+        base_dir (str, optional): The base directory to create the project in.
+            Defaults to "projects".
+
+    Returns:
+        Optional[Path]: The Path object for the project directory if created,
+            None if creation fails.
+
+    Creates:
+        - projects/<project_name>/src/<project_name>/
+        - projects/<project_name>/tests/
+        - projects/<project_name>/docs/
+        - README.md, requirements.txt, and __init__.py files
+    """
+    # Validate project name
+    if not validate_project_name(project_name):
+        return None
+
+    # Define base path for the project
+    base_path = Path(base_dir) / project_name
+
+    # Define directory structure
     paths = [
-        base_path / "src" / project_name,
-        base_path / "tests",
-        base_path / "docs",
+        base_path / 'src' / project_name,
+        base_path / 'tests',
+        base_path / 'docs',
     ]
 
-    for path in paths:
-        path.mkdir(parents=True, exist_ok=True)
+    try:
+        # Create directories
+        for path in paths:
+            path.mkdir(parents=True, exist_ok=True)
+            logger.debug('Created directory: %s', path)
 
-    # Create initial files
-    (base_path / "README.md").touch()
-    (base_path / "requirements.txt").touch()
-    (base_path / "src" / project_name / "__init__.py").touch()
-    (base_path / "tests" / "__init__.py").touch()
+        # Create initial files
+        initial_files = [
+            (
+                base_path / 'README.md',
+                f'# {project_name}\n\nProject description goes here.',
+            ),
+            (base_path / 'requirements.txt', ''),
+            (
+                base_path / 'src' / project_name / '__init__.py',
+                f'"""{project_name} package."""',
+            ),
+            (
+                base_path / 'tests' / '__init__.py',
+                f'"""Test suite for {project_name}."""',
+            ),
+        ]
 
-    print(f"Project {project_name} created at {base_path}")
+        for file_path, content in initial_files:
+            file_path.write_text(content, encoding='utf-8')
+            logger.debug('Created file: %s', file_path)
+
+        logger.info("Project '%s' created successfully at %s", project_name, base_path)
+        return base_path
+
+    except PermissionError as e:
+        logger.error('Permission denied while creating project: %s', e)
+        return None
+    except OSError as e:
+        logger.error('Failed to create project structure: %s', e)
+        return None
 
 
-if __name__ == "__main__":
-    import sys
+def main() -> None:
+    """
+    Main entry point for the script.
 
+    Expects a single command-line argument for the project name.
+    Exits with status code 1 if the usage is incorrect or project creation fails.
+    """
     if len(sys.argv) != 2:
-        print("Usage: python setup_project.py <project_name>")
+        logger.error('Usage: python %s <project_name>', sys.argv[0])
         sys.exit(1)
-    create_project(sys.argv[1])
+
+    project_name = sys.argv[1]
+    result = create_project(project_name)
+    if result is None:
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()
