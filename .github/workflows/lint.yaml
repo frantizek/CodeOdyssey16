@@ -49,5 +49,5 @@ jobs:
 
       - name: Run Bandit Security Scan
         run: |
-          # Use -r to scan recursively and -c to use our config file
-          uv run bandit -r . -c pyproject.toml
+          # Scan only our specific source code directories
+          uv run bandit -r projects/ scripts/ utils/ -c pyproject.toml
