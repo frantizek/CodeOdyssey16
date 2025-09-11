@@ -45,7 +45,7 @@ jobs:
 
       - name: Run Mypy Type Checker
         run: |
-          uv run mypy .
+          uv run mypy . --namespace-packages
 
       - name: Run Bandit Security Scan
         run: |
