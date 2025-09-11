@@ -12,11 +12,11 @@ dependencies = []
 
 [project.optional-dependencies]
 dev = [
-    "ruff>=0.1.6",
-    "black>=23.12.1",
-    "mypy>=1.8.0",
+    "ruff>=0.4.4",
+    "mypy>=1.10.0",
     "pre-commit>=3.6.0",
     "pytest>=7.4.0",
+    "bandit>=1.7.8",
 ]
 
 [tool.ruff]
@@ -25,14 +25,9 @@ line-length = 88
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "C4", "UP"]
 ignore = ["E501"]
-# exclude = ["migrations", "venv"]  # Excluir directorios
 
 [tool.ruff.format]
-quote-style = "single"  # o "double"
-
-[tool.black]
-line-length = 88
-target-version = ['py311']
+quote-style = "single"
 
 [tool.mypy]
 python_version = 3.11
@@ -42,3 +37,7 @@ disallow_untyped_defs = true
 disallow_incomplete_defs = true
 check_untyped_defs = true
 no_implicit_optional = true
+explicit_package_bases = true
+
+[tool.bandit]
+exclude_dirs = ["tests"]
