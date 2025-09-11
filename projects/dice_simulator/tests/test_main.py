@@ -6,7 +6,7 @@ Tests for the dice_simulator main module.
 from unittest.mock import Mock, patch
 
 import pytest
-from src.dice_simulator.main import Die
+from dice_simulator.main import Die
 
 # Third-party imports
 # Local application imports
