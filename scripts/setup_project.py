@@ -8,6 +8,9 @@ files like README.md and requirements.txt. It ensures compatibility with
 common Python linters (e.g., flake8, pylint, mypy) and follows PEP 8 style
 guidelines.
 
+Improvements:
+- Checks if the project directory already exists to prevent accidental overwrites.
+
 Usage:
     python setup_project.py <project_name>
 
@@ -67,13 +70,16 @@ def create_project(project_name: str, base_dir: str = 'projects') -> Path | None
 
     Returns:
         Optional[Path]: The Path object for the project directory if created,
-            None if creation fails.
+            None if creation fails or if the directory already exists.
 
     Creates:
         - projects/<project_name>/src/<project_name>/
         - projects/<project_name>/tests/
         - projects/<project_name>/docs/
         - README.md, requirements.txt, and __init__.py files
+
+    Improvement:
+        - If the project directory exists, logs a warning and skips creation to avoid overwrites.
     """
     # Validate project name
     if not validate_project_name(project_name):
@@ -81,6 +87,16 @@ def create_project(project_name: str, base_dir: str = 'projects') -> Path | None
 
     # Define base path for the project
     base_path = Path(base_dir) / project_name
+
+    # Check if project already exists to prevent overwrite
+    if base_path.exists():
+        logger.warning(
+            "Project '%s' already exists at %s. Skipping creation to avoid overwriting existing files. "
+            'If you want to recreate, delete the directory first.',
+            project_name,
+            base_path,
+        )
+        return None
 
     # Define directory structure
     paths = [
