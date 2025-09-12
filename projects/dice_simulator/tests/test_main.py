@@ -80,3 +80,43 @@ def test_roll_dice_with_custom_sides_is_deterministic(mock_randbelow: Mock) -> N
     mock_randbelow.assert_called_once_with(sides)
     # Assert that our function correctly added 1 to the result
     assert result == 10
+
+
+def test_from_string_happy_path() -> None:
+    """Tests creating a Die from standard, valid string formats."""
+    d6 = Die.from_string('D6')
+    assert isinstance(d6, Die)
+    assert d6.sides == 6
+
+    d20 = Die.from_string('D20')
+    assert d20.sides == 20
+
+
+def test_from_string_edge_cases() -> None:
+    """Tests tricky but valid string inputs."""
+    d12 = Die.from_string('d12')  # Lowercase
+    assert d12.sides == 12
+
+    d8 = Die.from_string('  D8  ')  # Whitespace
+    assert d8.sides == 8
+
+
+def test_from_string_error_cases() -> None:
+    """Tests that invalid string formats correctly raise ValueErrors."""
+    with pytest.raises(ValueError, match='Input string cannot be empty.'):
+        Die.from_string('')
+
+    with pytest.raises(ValueError, match='Invalid dice format.'):
+        Die.from_string('X10')
+
+    with pytest.raises(ValueError, match='Invalid dice format.'):
+        Die.from_string('D')
+
+    with pytest.raises(ValueError, match='Invalid dice format.'):
+        Die.from_string('Dtwenty')
+
+
+def test_from_string_delegates_validation() -> None:
+    """Tests that from_string correctly passes values to __post_init__ for validation."""
+    with pytest.raises(ValueError, match='Number of sides must be at least 1.'):
+        Die.from_string('D0')

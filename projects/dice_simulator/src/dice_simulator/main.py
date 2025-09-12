@@ -7,14 +7,22 @@ with a customizable number of sides.
 """
 
 import secrets
+from dataclasses import dataclass
+from typing import Self
 
 
+@dataclass
 class Die:
-    def __init__(self, sides: int = 6) -> None:
-        if sides < 1:
+    """A dataclass representing a die with a customizable number of sides."""
+
+    sides: int = 6
+
+    def __post_init__(self) -> None:
+        """
+        Validates the Die's attributes after initialization.
+        """
+        if self.sides < 1:
             raise ValueError('Number of sides must be at least 1.')
-        else:
-            self.sides = sides
 
     def roll(self) -> int:
         """Simulates rolling a single die with a given number of sides.
@@ -33,6 +41,19 @@ class Die:
         """
         return secrets.randbelow(self.sides) + 1
 
+    @classmethod
+    def from_string(cls: type[Self], dice_string: str) -> Self:
+        """
+        Creates a Die instance from a string format (e.g., 'D6', 'd20').
+        """
+        if not dice_string:
+            raise ValueError('Input string cannot be empty.')
+        dice_string = dice_string.strip().upper()
+        if not dice_string.startswith('D') or not dice_string[1:].isdigit():
+            raise ValueError("Invalid dice format. Must be like 'D6' or 'D20'.")
+        number_of_sides = int(dice_string[1:])
+        return cls(sides=number_of_sides)
+
 
 def main() -> None:
     """
@@ -46,7 +67,7 @@ def main() -> None:
     try:
         d = Die()
         result = d.roll()
-        print(f'🎲 You rolled a: {result}')
+        print(f' 🎲  You rolled a: {result}')
     except ValueError as e:
         print(f'Error: {e}')
 
